@@ -1,0 +1,18 @@
+// Static tasks configuration.
+//
+// Example:
+[
+  {
+    "label": "Dioxus Format",
+    "command": "dx",
+    "args": [
+      "fmt"
+    ],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "never",
+    "reveal_target": "dock",
+    "hide": "never",
+    "shell": "system"
+  }
+]
