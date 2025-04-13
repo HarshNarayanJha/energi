@@ -1,0 +1,55 @@
+extern crate upower_dbus;
+
+use dioxus_logger::tracing;
+use upower_dbus::{BatteryState, DeviceProxy, UPowerProxy};
+
+use super::BatteryData;
+
+pub async fn get_battery_data() -> Result<BatteryData, zbus::Error> {
+    let connection = zbus::Connection::system().await?;
+
+    let upower = UPowerProxy::new(&connection).await?;
+
+    let device_paths = upower.enumerate_devices().await?;
+
+    // let's try to get the first device
+    for path in device_paths {
+        let device = DeviceProxy::new(&connection, path).await?;
+
+        tracing::debug!("Device: {:#?}", device.path());
+        let percentage = device.percentage().await?;
+        let state = device.state().await?;
+        let temperature = device.temperature().await?;
+        let rate: f64 = device.get_property("EnergyRate").await?;
+        // let charge_cycles: i64 = device.get_property("ChargeCycles").await?;
+        let health: f64 = device.get_property("Capacity").await?;
+        let time_to_empty: i64 = device.get_property("TimeToEmpty").await?;
+        let time_to_full: i64 = device.get_property("TimeToFull").await?;
+        let type_ = device.type_().await?;
+        let model = device.model().await?;
+
+        tracing::debug!("Device path: {:#?}", percentage);
+        tracing::debug!("Device state: {:#?}", state);
+        tracing::debug!("Device temperature: {:#?}", temperature);
+        tracing::debug!("Device rate: {:#?}", rate);
+        // tracing::debug!("Device charge cycles: {:#?}", charge_cycles);
+        tracing::debug!("Device health: {:#?}", health);
+        tracing::debug!("Device time to empty: {:#?}", time_to_empty);
+        tracing::debug!("Device time to full: {:#?}", time_to_full);
+        tracing::debug!("Device type: {:#?}", type_);
+        tracing::debug!("Device model: {:#?}", model);
+
+        return Ok(BatteryData {
+            percentage,
+            charging: state == BatteryState::Charging,
+            health,
+            temperature,
+            rate,
+            time_remaining: time_to_full,
+            history_percentage: vec![],
+            history_rate: vec![],
+        });
+    }
+
+    Err(zbus::Error::Failure("No battery devices found".into()))
+}

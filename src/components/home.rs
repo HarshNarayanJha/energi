@@ -1,6 +1,7 @@
 use dioxus::prelude::*;
 use dioxus_logger::tracing;
 
+use crate::models::get_battery_data;
 use crate::models::BatteryData;
 
 #[component]
@@ -11,9 +12,18 @@ pub fn Home() -> Element {
         health: 90.0,
         temperature: 25.0,
         rate: 8.56,
-        time_remaining: 2.0,
+        time_remaining: 2,
         history_percentage: Vec::new(),
         history_rate: Vec::new(),
+    });
+
+    use_effect(move || {
+        spawn(async move {
+            let data = get_battery_data().await;
+            if let Ok(data) = data {
+                battery_data.set(data);
+            }
+        });
     });
 
     let charge = move |_| {
@@ -21,8 +31,20 @@ pub fn Home() -> Element {
         let mut current = battery_data();
         current.percentage += 1.0;
         current.charging = !current.charging;
-        current.time_remaining = 4.5;
+        current.time_remaining = 10;
         battery_data.set(current);
+    };
+
+    let refresh = move |_| {
+        tracing::info!("Refreshed");
+        spawn(async move {
+            let data = get_battery_data().await;
+            if let Ok(data) = data {
+                battery_data.set(data);
+            } else {
+                tracing::error!("Failed to refresh battery data");
+            }
+        });
     };
 
     rsx! {
@@ -45,6 +67,7 @@ pub fn Home() -> Element {
             }
 
             button { onclick: charge, "Charge My Battery" }
+            button { onclick: refresh, "Refresh" }
         }
     }
 }
