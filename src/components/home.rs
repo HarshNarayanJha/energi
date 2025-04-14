@@ -1,6 +1,7 @@
 use dioxus::prelude::*;
 use dioxus_logger::tracing;
 
+use super::BatteryGraph;
 use super::ReadingTile;
 use crate::models::get_battery_data;
 use crate::models::BatteryData;
@@ -98,26 +99,25 @@ pub fn Home() -> Element {
                 }
             }
 
+            div { class: "mt-8 rounded-lg p-6",
+                h2 { class: "text-2xl font-bold ps-4 mb-8 dark:text-gray-100",
+                    "Battery Percentage Graph"
+                }
 
-            // p { "Current Charge Level: {battery_data.read().percentage}%" }
-            // p { "Battery Status: {battery_data.read().charging}" }
-            // p { "Estimated Time Remaining: {battery_data.read().time_remaining} hours" }
-            // p { "Estimated Time To Full: {battery_data.time_to_full} hours" }
-            // p { "Battery Temperature: {battery_data.read().temperature}°C" }
-            // p { "Battery Health: {battery_data.read().health}%" }
-            // p { "Battery discharging rate: {battery_data.read().rate}W" }
-
-            div { class: "mt-8 bg-gray-800 rounded-lg p-6",
-                p { class: "text-center text-gray-300", "Graph for battery charge over time..." }
+                BatteryGraph {}
             }
 
-            div { class: "mt-8 bg-gray-800 rounded-lg p-6",
-                p { class: "text-center text-gray-300", "Graph for battery watt usage over time..." }
+            div { class: "mt-8 rounded-lg p-6",
+                h2 { class: "text-2xl font-bold ps-4 mb-8 dark:text-gray-100",
+                    "Battery Energy Consumption Graph"
+                }
+
+                BatteryGraph {}
             }
 
             div { class: "mt-8 flex gap-4 justify-center",
                 button {
-                    class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors",
+                    class: "px-4 py-2 bg-gray-300 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition-colors dark:text-gray-100",
                     onclick: refresh,
                     "Refresh"
                 }

@@ -7,10 +7,10 @@ https://tailwindcss.com/blog/tailwindcss-v4#automatic-content-detection.
 */
 @import "tailwindcss";
 
-@tailwind utilities;
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   body {
-    @apply bg-[#0f1116] text-white font-sans antialiased
+    @apply bg-white text-gray-900 dark:bg-gray-900 dark:text-white font-sans antialiased
   }
 }

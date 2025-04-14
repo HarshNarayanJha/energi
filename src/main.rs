@@ -1,4 +1,7 @@
-use dioxus::prelude::*;
+use dioxus::{
+    desktop::{tao::window::Theme, window},
+    prelude::*,
+};
 
 use components::Home;
 mod components;
@@ -13,6 +16,11 @@ fn main() {
 
 #[component]
 fn App() -> Element {
+    use_effect(|| {
+        let window = window();
+        window.set_title("Energi");
+    });
+
     rsx! {
         document::Link { rel: "icon", href: FAVICON }
         document::Link { rel: "stylesheet", href: TAILWIND_CSS }
