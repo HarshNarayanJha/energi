@@ -20,11 +20,16 @@ pub async fn get_battery_data() -> Result<BatteryData, zbus::Error> {
         let percentage = device.percentage().await?;
         let state = device.state().await?;
         let temperature = device.temperature().await?;
+
         let rate: f64 = device.get_property("EnergyRate").await?;
         // let charge_cycles: i64 = device.get_property("ChargeCycles").await?;
         let health: f64 = device.get_property("Capacity").await?;
         let time_to_empty: i64 = device.get_property("TimeToEmpty").await?;
         let time_to_full: i64 = device.get_property("TimeToFull").await?;
+        let voltage: f64 = device.get_property("Voltage").await?;
+        let vendor: String = device.get_property("Vendor").await?;
+        let serial: String = device.get_property("Serial").await?;
+
         let type_ = device.type_().await?;
         let model = device.model().await?;
 
@@ -36,8 +41,11 @@ pub async fn get_battery_data() -> Result<BatteryData, zbus::Error> {
         tracing::debug!("Device health: {:#?}", health);
         tracing::debug!("Device time to empty: {:#?}", time_to_empty);
         tracing::debug!("Device time to full: {:#?}", time_to_full);
+        tracing::debug!("Device voltage: {:#?}", voltage);
         tracing::debug!("Device type: {:#?}", type_);
         tracing::debug!("Device model: {:#?}", model);
+        tracing::debug!("Device vendor: {:#?}", vendor);
+        tracing::debug!("Device serial: {:#?}", serial);
 
         return Ok(BatteryData {
             percentage,
@@ -45,7 +53,13 @@ pub async fn get_battery_data() -> Result<BatteryData, zbus::Error> {
             health,
             temperature,
             rate,
-            time_remaining: time_to_full,
+            time_to_empty,
+            time_to_full,
+            serial,
+            vendor,
+            model,
+            voltage,
+            charge_cycles: 0,
             history_percentage: vec![],
             history_rate: vec![],
         });
