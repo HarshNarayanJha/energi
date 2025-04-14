@@ -8,6 +8,7 @@ edition = "2021"
 
 [dependencies]
 dioxus = { version = "0.6.0", features = [] }
+dioxus-charts = "0.3.1"
 dioxus-logger = "0.6.2"
 upower_dbus = "0.3.2"
 zbus = { version = "3.15.1", features = ["tokio"] }
