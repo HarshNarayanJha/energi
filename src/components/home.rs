@@ -1,18 +1,25 @@
 use dioxus::prelude::*;
 use dioxus_logger::tracing;
 
+use super::ReadingTile;
 use crate::models::get_battery_data;
 use crate::models::BatteryData;
 
 #[component]
 pub fn Home() -> Element {
     let mut battery_data = use_signal(|| BatteryData {
-        percentage: 67.0,
+        percentage: 100.0,
         charging: true,
-        health: 90.0,
-        temperature: 25.0,
-        rate: 8.56,
-        time_remaining: 2,
+        health: 100.0,
+        temperature: 37.0,
+        rate: 5.00,
+        time_to_empty: 0,
+        time_to_full: 0,
+        serial: String::new(),
+        vendor: String::new(),
+        model: String::new(),
+        voltage: 0.0,
+        charge_cycles: 0,
         history_percentage: Vec::new(),
         history_rate: Vec::new(),
     });
@@ -25,15 +32,6 @@ pub fn Home() -> Element {
             }
         });
     });
-
-    let charge = move |_| {
-        tracing::info!("Pressed");
-        let mut current = battery_data();
-        current.percentage += 1.0;
-        current.charging = !current.charging;
-        current.time_remaining = 10;
-        battery_data.set(current);
-    };
 
     let refresh = move |_| {
         tracing::info!("Refreshed");
@@ -48,26 +46,82 @@ pub fn Home() -> Element {
     };
 
     rsx! {
-        div { id: "root", class: "select-none",
-            h1 { "Energi" }
-            p { "Current Charge Level: {battery_data:?}%" }
-            p { "Battery Status: {battery_data.read().charging}" }
-            p { "Estimated Time Remaining: {battery_data.read().time_remaining} hours" }
+        div { id: "home", class: "select-none min-h-screen p-8",
+            h1 { class: "text-4xl font-bold tracking-tight mb-2", "Energi" }
+            p { class: "mb-8", "Quick stats about your battery" }
+
+            div { id: "stats", class: "flex flex-row flex-wrap gap-4",
+                ReadingTile {
+                    label: "Charge Level:",
+                    value: "{battery_data.read().percentage}%",
+                }
+                ReadingTile {
+                    label: "Battery Status:",
+                    value: "{battery_data.read().charging}",
+                }
+                ReadingTile {
+                    label: "Estimated Time Remaining:",
+                    value: "{battery_data.read().time_to_empty} minutes",
+                }
+                ReadingTile {
+                    label: "Estimated Time To Full:",
+                    value: "{battery_data.read().time_to_full} minutes",
+                }
+                ReadingTile {
+                    label: "Battery Temperature:",
+                    value: "{battery_data.read().temperature}°C",
+                }
+                ReadingTile {
+                    label: "Battery Health:",
+                    value: "{battery_data.read().health}%",
+                }
+                ReadingTile {
+                    label: "Battery Discharging Rate:",
+                    value: "{battery_data.read().rate}W",
+                }
+                ReadingTile {
+                    label: "Voltage:",
+                    value: "{battery_data.read().voltage}V",
+                }
+                // ReadingTile {
+                //     label: "Charge Cycle:",
+                //     value: "{battery_data.read().charge_cycles}",
+                // }
+                ReadingTile { label: "Model:", value: "{battery_data.read().model}" }
+                ReadingTile {
+                    label: "Battery Vendor:",
+                    value: "{battery_data.read().vendor}",
+                }
+                ReadingTile {
+                    label: "Serial Number:",
+                    value: "{battery_data.read().serial}",
+                }
+            }
+
+
+            // p { "Current Charge Level: {battery_data.read().percentage}%" }
+            // p { "Battery Status: {battery_data.read().charging}" }
+            // p { "Estimated Time Remaining: {battery_data.read().time_remaining} hours" }
             // p { "Estimated Time To Full: {battery_data.time_to_full} hours" }
-            p { "Battery Temperature: {battery_data.read().temperature}°C" }
-            p { "Battery Health: {battery_data.read().health}%" }
-            p { "Battery discharging rate: {battery_data.read().rate}W" }
+            // p { "Battery Temperature: {battery_data.read().temperature}°C" }
+            // p { "Battery Health: {battery_data.read().health}%" }
+            // p { "Battery discharging rate: {battery_data.read().rate}W" }
 
-            div { class: "mt-8",
-                p { class: "text-center", "Graph for battery charge over time..." }
+            div { class: "mt-8 bg-gray-800 rounded-lg p-6",
+                p { class: "text-center text-gray-300", "Graph for battery charge over time..." }
             }
 
-            div { class: "mt-8",
-                p { class: "text-center", "Graph for battery watt usage over time..." }
+            div { class: "mt-8 bg-gray-800 rounded-lg p-6",
+                p { class: "text-center text-gray-300", "Graph for battery watt usage over time..." }
             }
 
-            button { onclick: charge, "Charge My Battery" }
-            button { onclick: refresh, "Refresh" }
+            div { class: "mt-8 flex gap-4 justify-center",
+                button {
+                    class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors",
+                    onclick: refresh,
+                    "Refresh"
+                }
+            }
         }
     }
 }
