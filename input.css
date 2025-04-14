@@ -1,3 +1,16 @@
-@tailwind base;
-@tailwind components;
+/*
+This file replaces tailwind.config.js, see
+https://tailwindcss.com/blog/tailwindcss-v4#css-first-configuration.
+The `content` configuration variable for detecting classes used in rust files
+is no longer necessary, see
+https://tailwindcss.com/blog/tailwindcss-v4#automatic-content-detection.
+*/
+@import "tailwindcss";
+
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#0f1116] text-white font-sans antialiased
+  }
+}
