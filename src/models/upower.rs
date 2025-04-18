@@ -1,7 +1,7 @@
 extern crate upower_dbus;
 
 use dioxus_logger::tracing;
-use upower_dbus::{BatteryState, DeviceProxy, UPowerProxy};
+use upower_dbus::{DeviceProxy, UPowerProxy};
 
 use super::BatteryData;
 
@@ -13,7 +13,8 @@ pub async fn get_battery_data() -> Result<BatteryData, zbus::Error> {
     let device_paths = upower.enumerate_devices().await?;
 
     // let's try to get the first device
-    for path in device_paths {
+    for path_owned in device_paths {
+        let path = path_owned.to_string();
         let device = DeviceProxy::new(&connection, path).await?;
 
         tracing::debug!("Device: {:#?}", device.path());
@@ -47,9 +48,50 @@ pub async fn get_battery_data() -> Result<BatteryData, zbus::Error> {
         tracing::debug!("Device vendor: {:#?}", vendor);
         tracing::debug!("Device serial: {:#?}", serial);
 
+        let _history_reply: (Vec<(u32, f64, u32)>,) = connection
+            .call_method(
+                Some("org.freedesktop.UPower"),
+                &path_owned,
+                Some("org.freedesktop.UPower.Device"),
+                "GetHistory",
+                &("charge", 7200u32, 1000u32),
+            )
+            .await?
+            .body()?;
+
+        let _rate_reply: (Vec<(u32, f64, u32)>,) = connection
+            .call_method(
+                Some("org.freedesktop.UPower"),
+                &path_owned,
+                Some("org.freedesktop.UPower.Device"),
+                "GetHistory",
+                &("rate", 1800u32, 500u32),
+            )
+            .await?
+            .body()?;
+
+        let history_percentage: Vec<(u32, f64)> = _history_reply
+            .0
+            .into_iter()
+            .map(|(time, value, _state)| (time, value))
+            .rev()
+            .skip(4)
+            .collect();
+
+        let history_rate: Vec<(u32, f64)> = _rate_reply
+            .0
+            .into_iter()
+            .map(|(time, value, _state)| (time, value))
+            .rev()
+            .skip(4)
+            .collect();
+
+        // tracing::debug!("Device charge history: {:#?}", history_percentage);
+        // tracing::debug!("Device rate history: {:#?}", history_rate);
+
         return Ok(BatteryData {
             percentage,
-            charging: state == BatteryState::Charging,
+            state,
             health,
             temperature,
             rate,
@@ -60,8 +102,8 @@ pub async fn get_battery_data() -> Result<BatteryData, zbus::Error> {
             model,
             voltage,
             charge_cycles: 0,
-            history_percentage: vec![],
-            history_rate: vec![],
+            history_percentage,
+            history_rate,
         });
     }
 
