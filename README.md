@@ -1,26 +1,48 @@
-# Development
+# Energi
 
-Your new jumpstart project includes basic organization with an organized `assets` folder and a `components` folder.
-If you chose to develop with the router feature, you will also have a `views` folder.
+Energi shows you what's really going on with your laptop battery. I built it because I was tired of not knowing why my battery was draining so fast. It puts all the important stuff—charge levels, power usage, and how your battery performs over time—right in front of you with simple charts that actually make sense.
 
-```
-project/
-├─ assets/ # Any assets that are used by the app should be placed here
-├─ src/
-│  ├─ main.rs # The entrypoint for the app.
-│  ├─ components/
-│  │  ├─ mod.rs # Defines the components module
-│  │  ├─ hero.rs # The Hero component for use in the home page
-├─ Cargo.toml # The Cargo.toml file defines the dependencies and feature flags for your project
-```
+All major desktop environments have a energy manager type of thing (like powerdevil on KDE) that shows a nice graph for battery usage.
+There was nothing like this on Hyprland and other non DE setups, so I made this!
 
-### Tailwind
-1. Install npm: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
-2. Install the Tailwind CSS CLI: https://tailwindcss.com/docs/installation
-3. Run the following command in the root of the project to start the Tailwind CSS compiler:
+With Energi, you can:
+
+- View current battery percentage and estimated time remaining
+- Monitor power draw in watts
+- See historical usage patterns through interactive charts
+- Get notifications about critical battery levels
+- Track battery health and capacity degradation over time
+- Optimize power usage with detailed consumption analytics
+
+## Installation
+
+Currently no builds are available for download. You can build Energi from source by following the instructions below.
+
+### Setup Development Environment
+
+1. Clone the repository:
 
 ```bash
-npx @tailwindcss/cli -i ./input.css -o ./assets/tailwind.css --watch
+git clone https://github.com/yourusername/energi.git
+cd energi
+```
+
+2. Make sure you have the Rust toolchain installed. If not, install it using:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+3. Install Dioxus CLI for development tools:
+
+```bash
+cargo install dioxus-cli
+```
+
+4. Install dependencies and build the Tailwind CSS:
+
+```bash
+cargo build
 ```
 
 ### Serving Your App
@@ -31,7 +53,14 @@ Run the following command in the root of your project to start developing with t
 dx serve
 ```
 
+Be sure to run the tailwind compiler before serving:
+
+```bash
+bun run tailwind
+```
+
 To run for a different platform, use the `--platform platform` flag. E.g.
+
 ```bash
 dx serve --platform desktop
 ```
