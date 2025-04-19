@@ -1,10 +1,16 @@
 import "./App.css"
+import Footer from "./components/Footer"
+import Home from "./components/Home"
 
 function App() {
 	return (
-		<main className="container">
-			<h1 className="text-2xl">Energi</h1>
-		</main>
+		<>
+			<main id="root" className="w-full min-h-svh p-8">
+				<Home />
+			</main>
+
+			<Footer />
+		</>
 	)
 }
 
