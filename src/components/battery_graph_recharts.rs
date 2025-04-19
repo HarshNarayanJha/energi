@@ -1,9 +1,13 @@
 use dioxus::prelude::*;
 
 #[component]
-pub fn BatteryGraphRecharts() -> Element {
+pub fn BatteryGraphRecharts(
+    timestamps: Vec<u64>,
+    values: Vec<f32>,
+    value_format: String,
+) -> Element {
+
     rsx! {
-        // div { dangerous_inner_html: generate_test_react() }
         div { id: "container" }
         script { r#type: "module",
 
@@ -51,7 +55,8 @@ pub fn BatteryGraphRecharts() -> Element {
                 .attr("width", width)
                 .attr("height", height)
                 .attr("viewBox", [0, 0, width, height])
-                .attr("style", "max-width: 100%; height: auto; font: 10px sans-serif; margin: auto;");
+                // .attr("style", "max-width: 100%; height: auto; font: 10px sans-serif; margin: auto;");
+                .attr("class", "max-w-full h-auto m-auto");
 
             // Add gradient for battery level
             const gradient = svg.append("defs")

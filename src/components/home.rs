@@ -190,7 +190,21 @@ pub fn Home() -> Element {
                 }
             }
 
-            BatteryGraphRecharts {}
+            BatteryGraphRecharts {
+                timestamps: battery_data
+                    .read()
+                    .history_percentage
+                    .iter()
+                    .map(|(time, _value)| { (*time as u64) * 1000u64 })
+                    .collect(),
+                values: battery_data
+                    .read()
+                    .history_percentage
+                    .iter()
+                    .map(|(_time, value)| *value as f32)
+                    .collect(),
+                value_format: "%",
+            }
         }
     }
 }
