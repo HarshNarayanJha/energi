@@ -3,6 +3,7 @@ use dioxus_logger::tracing;
 use upower_dbus::BatteryState;
 
 use super::BatteryGraph;
+use super::BatteryGraphRecharts;
 use super::ReadingTile;
 use crate::models::get_battery_data;
 use crate::models::BatteryData;
@@ -188,6 +189,8 @@ pub fn Home() -> Element {
                     "Refresh"
                 }
             }
+
+            BatteryGraphRecharts {}
         }
     }
 }

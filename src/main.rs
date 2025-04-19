@@ -1,7 +1,4 @@
-use dioxus::{
-    desktop::{tao::window::Theme, window},
-    prelude::*,
-};
+use dioxus::{desktop::window, prelude::*};
 
 use components::Home;
 mod components;
