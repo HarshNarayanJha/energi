@@ -3,15 +3,15 @@ import Footer from "./components/Footer"
 import Home from "./components/Home"
 
 function App() {
-	return (
-		<>
-			<main id="root" className="w-full min-h-svh p-8">
-				<Home />
-			</main>
+  return (
+    <>
+      <main id="root" className="w-full min-h-svh p-8">
+        <Home />
+      </main>
 
-			<Footer />
-		</>
-	)
+      <Footer />
+    </>
+  )
 }
 
 export default App
