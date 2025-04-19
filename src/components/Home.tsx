@@ -7,6 +7,7 @@ import {
   type BatteryStateType,
 } from "../types/battery_data"
 import ActionButton from "./ActionButton"
+import ColorThemeButton from "./ColorThemeButton"
 import LineGraph from "./LineGraph"
 import ReadingTile from "./ReadingTile"
 
@@ -63,10 +64,11 @@ export default function Home() {
             Quick stats about your battery
           </p>
         </div>
-        <div>
+        <div className="space-x-4">
           <ActionButton onClick={() => fetchBatteryData()}>
             Refresh
           </ActionButton>
+          <ColorThemeButton />
         </div>
       </div>
 
