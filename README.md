@@ -23,7 +23,7 @@ Currently no builds are available for download. You can build Energi from source
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/energi.git
+git clone https://github.com/HarshNarayanJha/energi.git
 cd energi
 ```
 
@@ -33,34 +33,16 @@ cd energi
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-3. Install Dioxus CLI for development tools:
+3. Install Dependencies:
 
 ```bash
-cargo install dioxus-cli
+bun install
 ```
 
-4. Install dependencies and build the Tailwind CSS:
+### Serving Energi
+
+Run the following command in the root of the project to start developing with the default platform:
 
 ```bash
-cargo build
-```
-
-### Serving Your App
-
-Run the following command in the root of your project to start developing with the default platform:
-
-```bash
-dx serve
-```
-
-Be sure to run the tailwind compiler before serving:
-
-```bash
-bun run tailwind
-```
-
-To run for a different platform, use the `--platform platform` flag. E.g.
-
-```bash
-dx serve --platform desktop
+bun run tauri dev
 ```
